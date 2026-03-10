@@ -13,8 +13,11 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
-    // 听书接口：必须是 1.0.1 版本
-    implementation 'com.github.eprendre:tingshu-sources-interface:1.0.1'
+    
+    // 核心修改：使用 commit hash 替代 1.0.1，彻底解决 401 Unauthorized 报错
+    implementation 'com.github.eprendre:tingshu-sources-interface:75a7407' 
+    
+    // 网页解析库
     implementation 'org.jsoup:jsoup:1.16.1'
 }
 
@@ -22,7 +25,7 @@ jar {
     archiveFileName = "18ts.jar"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     
-    // 这一步非常重要：将 Jsoup 等所有依赖全部打包进 JAR，否则 App 无法运行
+    // 将依赖打入 JAR 包，确保 App 能正常加载
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
