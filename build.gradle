@@ -4,13 +4,14 @@ plugins {
 
 repositories {
     mavenCentral()
+    google()
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
     implementation 'org.jsoup:jsoup:1.14.3'
-    // 关键：必须是 implementation，解决 Unresolved reference 问题
+    // 必须使用 implementation 或 api，确保编译时能找到 TingShu 类
     implementation 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
 
