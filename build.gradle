@@ -1,0 +1,21 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation 'org.jsoup:jsoup:1.14.3'
+    compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
+}
+
+jar {
+    archiveFileName = "18ts.jar"
+    manifest {
+        attributes('Implementation-Title': '18TS Source', 'Implementation-Version': '1.0')
+    }
+}
