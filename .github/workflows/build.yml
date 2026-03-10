@@ -17,13 +17,13 @@ jobs:
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3 # 使用官方 Gradle 动作，更稳定
+      uses: gradle/actions/setup-gradle@v3 # 官方推荐的 Gradle 环境配置
 
     - name: Build with Gradle
       run: gradle jar --no-daemon
 
     - name: Upload JAR
-      uses: actions/upload-artifact@v4 # 解决 v3 deprecated 报错的核心步骤
+      uses: actions/upload-artifact@v4 # 核心：升级到 v4 以解决 deprecated 报错
       with:
         name: my-plugin
         path: build/libs/18ts.jar
