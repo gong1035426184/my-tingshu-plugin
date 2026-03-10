@@ -12,11 +12,9 @@ repositories {
 }
 
 dependencies {
-    // 升级 Kotlin 标准库
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
-    // 听书接口
+    // 听书接口：必须是 1.0.1 版本
     implementation 'com.github.eprendre:tingshu-sources-interface:1.0.1'
-    // 网页解析
     implementation 'org.jsoup:jsoup:1.16.1'
 }
 
@@ -24,7 +22,7 @@ jar {
     archiveFileName = "18ts.jar"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     
-    // 将依赖打入 JAR 包（制作 Fat Jar）
+    // 这一步非常重要：将 Jsoup 等所有依赖全部打包进 JAR，否则 App 无法运行
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
