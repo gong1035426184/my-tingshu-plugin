@@ -1,4 +1,3 @@
-
 name: BuildJar
 on: [push, workflow_dispatch]
 jobs:
@@ -13,15 +12,12 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3 # 核心：这行会自动帮你补齐缺失的 gradle 零件
-
-      - name: Run Build
+      - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew jar
+          ./gradlew jar --no-daemon
           
-      - name: Save Result
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: tingshu-jar
