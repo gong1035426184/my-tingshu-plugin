@@ -10,6 +10,8 @@ jobs:
       with:
         java-version: '17' # 必须是 17，解决之前 image_789efa 的报错
         distribution: 'temurin'
+      with:
+        gradle-version: 8.10  # 加上这一行，强制指定版本
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
     - name: Build with Gradle
