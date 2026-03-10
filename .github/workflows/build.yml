@@ -15,7 +15,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: 8.10
+          gradle-version: '8.10'  # 核心修改：加上单引号，防止被 YAML 识别为 8.1
 
       - name: Build with Gradle
         run: gradle jar --no-daemon
