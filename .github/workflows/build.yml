@@ -1,22 +1,29 @@
 name: BuildJar
 
-on: push
+on:
+  push:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4  # 升级到 v4
+
     - name: Set up JDK 11
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4 # 升级到 v4
       with:
         java-version: '11'
         distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3 # 使用官方 Gradle 动作，更稳定
+
     - name: Build with Gradle
-      # 增加 --stacktrace 参数，如果报错，它会告诉我们具体的行号
-      run: gradle jar --stacktrace
+      run: gradle jar --no-daemon
+
     - name: Upload JAR
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4 # 解决 v3 deprecated 报错的核心步骤
       with:
         name: my-plugin
         path: build/libs/18ts.jar
