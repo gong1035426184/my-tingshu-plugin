@@ -1,6 +1,9 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
 }
+
+group 'com.github.gong1035'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -9,20 +12,20 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
-    implementation 'org.jsoup:jsoup:1.14.3'
-    // 必须使用 implementation 或 api，确保编译时能找到 TingShu 类
+    // 升级 Kotlin 标准库
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+    // 听书接口
     implementation 'com.github.eprendre:tingshu-sources-interface:1.0.1'
-}
-
-sourceSets {
-    main.kotlin.srcDirs = ['src/main/kotlin']
+    // 网页解析
+    implementation 'org.jsoup:jsoup:1.16.1'
 }
 
 jar {
     archiveFileName = "18ts.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    
+    // 将依赖打入 JAR 包（制作 Fat Jar）
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
