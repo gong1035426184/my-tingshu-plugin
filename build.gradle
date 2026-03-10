@@ -8,24 +8,18 @@ version '1.0'
 repositories {
     mavenCentral()
     google()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
-    
-    // 核心修改：使用 commit hash 替代 1.0.1，彻底解决 401 Unauthorized 报错
-    implementation 'com.github.eprendre:tingshu-sources-interface:75a7407' 
-    
-    // 网页解析库
     implementation 'org.jsoup:jsoup:1.16.1'
+    
+    // 注意：这里删掉了之前报错的 jitpack 依赖行
 }
 
 jar {
     archiveFileName = "18ts.jar"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    
-    // 将依赖打入 JAR 包，确保 App 能正常加载
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
