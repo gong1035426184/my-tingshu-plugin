@@ -10,7 +10,8 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
     implementation 'org.jsoup:jsoup:1.14.3'
-    compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
+    // 这里改为 implementation，确保打包时能找到类
+    implementation 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
 
 sourceSets {
