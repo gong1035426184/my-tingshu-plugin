@@ -14,7 +14,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.16.1'
 }
 
-// 重点：显式指定 Kotlin 源代码路径
+// 重点：显式告知 Kotlin 源代码的确切位置
 sourceSets {
     main.kotlin.srcDirs = ['src/main/kotlin']
 }
