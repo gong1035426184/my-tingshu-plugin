@@ -2,9 +2,6 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.9.22'
 }
 
-group 'com.github.gong1035'
-version '1.0'
-
 repositories {
     mavenCentral()
 }
@@ -12,10 +9,6 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
     implementation 'org.jsoup:jsoup:1.16.1'
-}
-
-sourceSets {
-    main.kotlin.srcDirs = ['src/main/kotlin']
 }
 
 jar {
