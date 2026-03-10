@@ -4,36 +4,58 @@ import com.github.eprendre.tingshu.model.Album
 import com.github.eprendre.tingshu.model.Category
 import com.github.eprendre.tingshu.model.Episode
 import org.jsoup.Jsoup
-import java.net.URLEncoder
 
 object EighteenTS : TingShu {
     private const val baseUrl = "https://www.18ts.org"
-    private const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    private const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 
     override fun getSourceId(): String = "eighteen_ts"
 
-    override fun getSourceName(): String = "18听书"
+    override fun getSourceName(): String = "18有声"
 
     override fun getCategories(): List<Category> {
         return listOf(
-            Category("都市言情", "$baseUrl/list/1.html"),
-            Category("武侠仙侠", "$baseUrl/list/2.html"),
-            Category("恐怖悬疑", "$baseUrl/list/3.html"),
-            Category("玄幻奇幻", "$baseUrl/list/4.html"),
-            Category("军事历史", "$baseUrl/list/5.html"),
-            Category("网游竞技", "$baseUrl/list/6.html"),
-            Category("科幻职场", "$baseUrl/list/7.html"),
-            Category("评书戏曲", "$baseUrl/list/8.html"),
-            Category("文学名著", "$baseUrl/list/9.html"),
-            Category("少儿读物", "$baseUrl/list/10.html")
+            Category("连载", "/list/1.html"),
+            Category("完结", "/list/2.html")
         )
     }
 
     override fun getCategoryList(category: Category, page: Int): Pair<List<Album>, Int> {
-        val url =
-                )
-            }.filter { it.name.isNotBlank() && it.detailUrl.isNotBlank() } // 过滤掉无效数据
-            
+        val url = if (page <= 1) "$baseUrl${category.url}" else "$baseUrl${category.url.replace(".html", "_$page.html")}"
+        return parseAlbumList(url)
+    }
+
+    override fun search(keywords: String, page: Int): Pair<List<Album>, Int> {
+        val url = "$baseUrl/search.php?searchword=$keywords&page=$page"
+        return parseAlbumList(url)
+    }
+
+    private fun parseAlbumList(url: String): Pair<List<Album>, Int> {
+        val doc = Jsoup.connect(url).userAgent(userAgent).get()
+        val albums = doc.select(".list-item").map { element ->
+            Album(
+                name = element.select(".title").text(),
+                coverUrl = element.select("img").attr("src"),
+                intro = element.select(".intro").text(),
+                detailUrl = element.select("a").attr("href"),
+                author = "",
+                artist = ""
+            )
+        }
+        return Pair(albums, 1)
+    }
+
+    override fun getAlbumDetail(album: Album): List<Episode> {
+        val doc = Jsoup.connect("$baseUrl${album.detailUrl}").userAgent(userAgent).get()
+        return doc.select(".playlist a").map { element ->
+            Episode(name = element.text(), url = element.attr("href"))
+        }
+    }
+
+    override fun getAudioUrl(episode: Episode): String {
+        return "$baseUrl${episode.url}"
+    }
+}
             Pair(albums, page + 1)
         } catch (e: Exception) {
             e.printStackTrace()
