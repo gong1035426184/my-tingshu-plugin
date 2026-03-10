@@ -7,14 +7,15 @@ version '1.0'
 
 repositories {
     mavenCentral()
-    google()
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
     implementation 'org.jsoup:jsoup:1.16.1'
-    
-    // 注意：这里删掉了之前报错的 jitpack 依赖行
+}
+
+sourceSets {
+    main.kotlin.srcDirs = ['src/main/kotlin']
 }
 
 jar {
