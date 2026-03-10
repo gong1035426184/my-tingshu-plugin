@@ -18,8 +18,7 @@ jobs:
           gradle-version: 8.10
 
       - name: Build with Gradle
-        # 增加 --stacktrace 可以看到具体哪一行代码错了
-        run: gradle jar --no-daemon --stacktrace
+        run: gradle jar --no-daemon
 
       - name: Upload JAR
         uses: actions/upload-artifact@v4
