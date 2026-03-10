@@ -11,9 +11,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v4 # 必须是 v4
       with:
-        java-version: '17' # 必须是17，匹配你的 Gradle 版本
+        java-version: '17' # 必须是 17，解决 major version 65 报错
         distribution: 'temurin'
 
     - name: Setup Gradle
@@ -23,4 +23,7 @@ jobs:
       run: gradle jar --no-daemon
 
     - name: Upload JAR
-      uses: actions/upload-artifact@v4 # 必须是 v4，否则上传会失败
+      uses: actions/upload-artifact@v4 # 必须是 v4
+      with:
+        name: 18ts-plugin
+        path: build/libs/18ts.jar
