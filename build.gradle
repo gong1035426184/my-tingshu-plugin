@@ -13,16 +13,13 @@ dependencies {
     compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
 
-// 强制指引机器去 src/main/kotlin 找代码
+// 必须有这一段，告诉机器去哪里找 EighteenTS.kt
 sourceSets {
     main.kotlin.srcDirs = ['src/main/kotlin']
 }
 
 jar {
-    // 设置生成的包名
     archiveFileName = "18ts.jar"
-    
-    // 把依赖包也打进去，确保手机端能运行
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
