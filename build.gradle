@@ -4,13 +4,13 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' } // 确保这一行存在
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
     implementation 'org.jsoup:jsoup:1.14.3'
-    // 这里改为 implementation，确保打包时能找到类
+    // 关键：确保这里是 implementation 而不是 compileOnly
     implementation 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
 
