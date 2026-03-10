@@ -2,7 +2,7 @@ import com.github.eprendre.tingshu.model.Book
 import com.github.eprendre.tingshu.model.BookDetail
 import com.github.eprendre.tingshu.model.Category
 import com.github.eprendre.tingshu.model.Episode
-import com.github.eprendre.tingshu.sources.TingShu // 必须手动导入，解决 image_7832b7 报错
+import com.github.eprendre.tingshu.sources.TingShu // 这一行是解决 image_7822dc 报错的关键
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 
@@ -11,9 +11,7 @@ object EighteenTS : TingShu() {
     private val mobileUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/004.1"
 
     override fun getName(): String = "18听书网"
-
     override fun getUrl(): String = baseUrl
-
     override fun getSelectedCategory(): Category? = null
 
     override fun getCategories(): List<Category> {
@@ -60,22 +58,9 @@ object EighteenTS : TingShu() {
         val doc = Jsoup.connect(episodeUrl).userAgent(mobileUA).header("Referer", baseUrl).get()
         val iframePath = doc.select("#play").attr("src")
         if (iframePath.isEmpty()) return ""
-        
         val fullIframeUrl = if (iframePath.startsWith("http")) iframePath else baseUrl + iframePath
-
-        val iframeDoc = Jsoup.connect(fullIframeUrl)
-            .userAgent(mobileUA)
-            .header("Referer", episodeUrl)
-            .get()
-            
+        val iframeDoc = Jsoup.connect(fullIframeUrl).userAgent(mobileUA).header("Referer", episodeUrl).get()
         val html = iframeDoc.html()
         val regex = Regex("var (?:datas|url)\\s*=\\s*[\"\\[']+(.*?)[\"\\]']+")
         val match = regex.find(html)
-        
-        var audioUrl = match?.groupValues?.get(1) ?: ""
-        if (audioUrl.isNotEmpty() && !audioUrl.startsWith("http")) {
-            audioUrl = baseUrl + audioUrl
-        }
-        return audioUrl
-    }
-}
+        var audioUrl
