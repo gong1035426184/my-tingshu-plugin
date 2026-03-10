@@ -12,12 +12,18 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.14.3'
     compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
+
+// 这是最关键的：手动指定代码路径
 sourceSets {
     main.kotlin.srcDirs = ['src/main/kotlin']
 }
+
 jar {
+    // 强制指定生成的包名
     archiveFileName = "18ts.jar"
-    manifest {
-        attributes('Implementation-Title': '18TS Source', 'Implementation-Version': '1.0')
+    
+    // 把依赖包也打进去，防止手机上报错
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
