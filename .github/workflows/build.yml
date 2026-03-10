@@ -10,10 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up JDK 17  # 这里改为 17
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: '17' # 这里改为 17，匹配 Gradle 的要求
+        java-version: '17' # 必须是17，解决日志中的 major version 65 报错
         distribution: 'temurin'
 
     - name: Setup Gradle
@@ -26,8 +26,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: 18ts-plugin
-        path: build/libs/18ts.jar
-      uses: actions/upload-artifact@v4 # 必须是 v4，彻底解决 image_7a0edf 中的报错
-      with:
-        name: my-plugin
         path: build/libs/18ts.jar
