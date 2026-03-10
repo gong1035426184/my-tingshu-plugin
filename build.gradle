@@ -8,19 +8,20 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
     implementation 'org.jsoup:jsoup:1.14.3'
     compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
 
-// 必须有这一段，告诉机器去哪里找 EighteenTS.kt
 sourceSets {
     main.kotlin.srcDirs = ['src/main/kotlin']
 }
 
 jar {
     archiveFileName = "18ts.jar"
+    // 最简打包逻辑，防止语法错误
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
