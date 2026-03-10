@@ -13,13 +13,14 @@ dependencies {
     compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
 }
 
+// 强制指定代码位置
 sourceSets {
     main.kotlin.srcDirs = ['src/main/kotlin']
 }
 
 jar {
     archiveFileName = "18ts.jar"
-    // 最简打包逻辑，防止语法错误
+    // 把依赖包缝合进去
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
