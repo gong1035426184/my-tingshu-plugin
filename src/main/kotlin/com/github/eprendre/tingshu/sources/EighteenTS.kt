@@ -1,6 +1,5 @@
 package com.github.eprendre.tingshu.sources
 
-import com.github.eprendre.tingshu.extensions.get
 import com.github.eprendre.tingshu.model.Album
 import com.github.eprendre.tingshu.model.Category
 import com.github.eprendre.tingshu.model.Episode
@@ -8,32 +7,30 @@ import org.jsoup.Jsoup
 import java.net.URLEncoder
 
 object EighteenTS : TingShu {
-    // 确保网址最后没有多余的斜杠
-    private const val baseUrl = "https://www.18ts.com"
-    // 伪装成真实的手机浏览器，防止被直接拦截
-    private const val userAgent = "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36"
+    private const val baseUrl = "https://www.18ts.org"
+    private const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 
-    override fun getSourceId(): String = "18ts"
-    override fun getSourceName(): String = "18听书网"
+    override fun getSourceId(): String = "eighteen_ts"
 
-    // 1. 搜索逻辑体检：注意 URL 编码和元素选择器
-    override fun search(keywords: String, page: Int): Pair<List<Album>, Int> {
-        return try {
-            // 必须对中文搜索词进行转码，否则网站可能不识别
-            val encodedKw = URLEncoder.encode(keywords, "UTF-8")
-            val url = "$baseUrl/search.php?searchword=$encodedKw&page=$page"
-            
-            val doc = Jsoup.connect(url).userAgent(userAgent).timeout(10000).get()
-            
-            // 假设搜索结果列表的每一项 class 是 .list-item 或 .book-li
-            val albums = doc.select(".list-item, .book-li, .search-list li").map { element ->
-                Album(
-                    name = element.select(".title, h3 a, .book-name").text(),
-                    coverUrl = element.select("img").attr("abs:src"),
-                    intro = element.select(".description, .intro, .desc").text(),
-                    detailUrl = element.select("a").first()?.attr("abs:href") ?: "",
-                    author = element.select(".author, .演播, .播音").text(),
-                    artist = ""
+    override fun getSourceName(): String = "18听书"
+
+    override fun getCategories(): List<Category> {
+        return listOf(
+            Category("都市言情", "$baseUrl/list/1.html"),
+            Category("武侠仙侠", "$baseUrl/list/2.html"),
+            Category("恐怖悬疑", "$baseUrl/list/3.html"),
+            Category("玄幻奇幻", "$baseUrl/list/4.html"),
+            Category("军事历史", "$baseUrl/list/5.html"),
+            Category("网游竞技", "$baseUrl/list/6.html"),
+            Category("科幻职场", "$baseUrl/list/7.html"),
+            Category("评书戏曲", "$baseUrl/list/8.html"),
+            Category("文学名著", "$baseUrl/list/9.html"),
+            Category("少儿读物", "$baseUrl/list/10.html")
+        )
+    }
+
+    override fun getCategoryList(category: Category, page: Int): Pair<List<Album>, Int> {
+        val url =
                 )
             }.filter { it.name.isNotBlank() && it.detailUrl.isNotBlank() } // 过滤掉无效数据
             
