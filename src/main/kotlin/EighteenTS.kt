@@ -1,66 +1,64 @@
-import com.github.eprendre.tingshu.model.Book
-import com.github.eprendre.tingshu.model.BookDetail
-import com.github.eprendre.tingshu.model.Category
+package com.github.eprendre.tingshu.sources
+
+import com.github.eprendre.tingshu.extensions.get
+import com.github.eprendre.tingshu.model.Album
 import com.github.eprendre.tingshu.model.Episode
-import com.github.eprendre.tingshu.sources.TingShu // 这一行是解决 image_7822dc 报错的关键
 import org.jsoup.Jsoup
-import java.net.URLEncoder
 
-object EighteenTS : TingShu() {
-    private val baseUrl = "https://www.18ts.com"
-    private val mobileUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/004.1"
+object EighteenTS : TingShu {
+    private const val baseUrl = "https://www.18ts.com"
+    private const val userAgent = "Mozilla/5.0 (Linux; Android 10; SM-G960N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36"
 
-    override fun getName(): String = "18听书网"
-    override fun getUrl(): String = baseUrl
-    override fun getSelectedCategory(): Category? = null
+    override fun getSourceId(): String = "18ts"
+    override fun getSourceName(): String = "18听书网"
 
-    override fun getCategories(): List<Category> {
-        return listOf(
-            Category("玄幻奇幻", "$baseUrl/list/1.html"),
-            Category("武侠修真", "$baseUrl/list/2.html"),
-            Category("都市言情", "$baseUrl/list/3.html"),
-            Category("青春校园", "$baseUrl/list/4.html"),
-            Category("穿越重生", "$baseUrl/list/5.html"),
-            Category("恐怖灵异", "$baseUrl/list/6.html"),
-            Category("网游竞技", "$baseUrl/list/7.html"),
-            Category("科幻史诗", "$baseUrl/list/8.html")
-        )
+    // 搜索逻辑
+    override fun search(keywords: String, page: Int): Pair<List<Album>, Int> {
+        val url = "$baseUrl/search.php?searchword=${keywords}&page=$page"
+        val doc = Jsoup.connect(url).userAgent(userAgent).get()
+        val albums = doc.select(".list-item").map { element ->
+            Album(
+                name = element.select(".title").text(),
+                coverUrl = element.select("img").attr("abs:src"),
+                intro = element.select(".description").text(),
+                detailUrl = element.select("a").attr("abs:href"),
+                author = element.select(".author").text(),
+                artist = ""
+            )
+        }
+        return Pair(albums, page + 1) // 假设总有下一页，接口会自动处理
     }
 
-    override fun search(keywords: String, page: Int): List<Book> {
-        val encodedKeywords = URLEncoder.encode(keywords, "gb2312")
-        val url = "$baseUrl/search.asp?page=$page&searchword=$encodedKeywords"
-        val doc = Jsoup.connect(url).userAgent(mobileUA).get()
-        return doc.select(".list-ul li").map {
-            val a = it.select("a").first()
-            Book(
-                name = a.text(),
-                url = baseUrl + a.attr("href"),
-                author = it.select(".author").text(),
-                artist = "",
-                sourceName = getName()
-            ).apply {
-                coverUrl = it.select("img").attr("src")
-                intro = it.select(".intro").text()
-            }
+    // 获取章节列表
+    override fun getAlbumDetail(album: Album): List<Episode> {
+        val doc = Jsoup.connect(album.detailUrl).userAgent(userAgent).get()
+        return doc.select(".playlist a").map {
+            Episode(
+                name = it.text(),
+                url = it.attr("abs:href")
+            )
         }
     }
 
-    override fun getBookDetail(book: Book): BookDetail {
-        val doc = Jsoup.connect(book.url).userAgent(mobileUA).get()
-        val episodes = doc.select(".playlist ul li a").map {
-            Episode(it.text(), baseUrl + it.attr("href"))
+    // 获取音频直链（最关键一步）
+    override fun getAudioUrl(episode: Episode): String {
+        // 18ts 通常在播放页的 script 标签里含有 playdata
+        val doc = Jsoup.connect(episode.url).userAgent(userAgent).header("Referer", baseUrl).get()
+        val scriptContent = doc.select("script").filter { it.html().contains("now") }.firstOrNull()?.html() ?: ""
+        
+        // 简单的正则匹配音频地址（根据实际加密情况可能需要解密，这里提供通用逻辑）
+        val regex = "url\":\"(.*?)\"".toRegex()
+        val matchResult = regex.find(scriptContent)
+        var audioUrl = matchResult?.groupValues?.get(1)?.replace("\\/", "/") ?: ""
+        
+        // 如果地址是相对路径，补全它
+        if (audioUrl.startsWith("/")) {
+            audioUrl = "$baseUrl$audioUrl"
         }
-        return BookDetail(episodes)
+        return audioUrl
     }
 
-    override fun getAudioUrl(episodeUrl: String): String {
-        val doc = Jsoup.connect(episodeUrl).userAgent(mobileUA).header("Referer", baseUrl).get()
-        val iframePath = doc.select("#play").attr("src")
-        if (iframePath.isEmpty()) return ""
-        val fullIframeUrl = if (iframePath.startsWith("http")) iframePath else baseUrl + iframePath
-        val iframeDoc = Jsoup.connect(fullIframeUrl).userAgent(mobileUA).header("Referer", episodeUrl).get()
-        val html = iframeDoc.html()
-        val regex = Regex("var (?:datas|url)\\s*=\\s*[\"\\[']+(.*?)[\"\\]']+")
-        val match = regex.find(html)
-        var audioUrl
+    // 分类浏览（可选，如果不需要可以返回空列表）
+    override fun getCategories(): List<Category> = emptyList()
+    override fun getCategoryList(category: Category, page: Int): Pair<List<Album>, Int> = Pair(emptyList(), 1)
+}
