@@ -1,0 +1,22 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+}
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
+    implementation 'org.jsoup:jsoup:1.14.3'
+    compileOnly 'com.github.eprendre:tingshu-sources-interface:1.0.1'
+}
+sourceSets {
+    main.kotlin.srcDirs = ['src/main/kotlin']
+}
+jar {
+    archiveFileName = "18ts.jar"
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
