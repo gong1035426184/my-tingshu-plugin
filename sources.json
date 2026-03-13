@@ -1,6 +1,6 @@
 {
-  "version": 3,
+  "version": 999,
   "entry_package": "EighteenTS",
   "name": "18听书网",
-  "download_url": "https://raw.gitmirror.com/gong1035426184/my-tingshu-plugin/main/18ts.jar"
+  "download_url": "https://localhost/18ts.jar"
 }
