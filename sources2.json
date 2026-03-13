@@ -1,6 +1,6 @@
 {
-  "version": 1,
+  "version": 2,
   "entry_package": "my_sound_01_plugin",
   "name": "我的听书音效源",
-  "download_url": "https://gong1035426184.github.io/my-tingshu-plugin/my_sound_01.jar"
+  "download_url": "https://raw.gitmirror.com/gong1035426184/my-tingshu-plugin/main/my_sound_01.jar"
 }
