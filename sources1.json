@@ -1,7 +1,8 @@
 {
   "version": 1,
-  "entry_package": "EighteenTS",
-  "download_url": "https://github.com/gong1035426184/my-tingshu-plugin/releases/download/v2.0/sources_by_eprendre.jar",
-  "update_msg": "初始版本发布",
+  "entry_package": "sources_by_eprendre",
+  "name": "Eprendre 扩展源",
+  "download_url": "https://gong1035426184.github.io/my-tingshu-plugin/sources_by_eprendre.jar",
+  "update_msg": "新增独立扩展源",
   "support_url": ""
 }
