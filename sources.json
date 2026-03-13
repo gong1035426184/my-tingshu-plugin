@@ -2,7 +2,7 @@
   "version": 1,
   "entry_package": "EighteenTS",
   "name": "18听书网",
-  "download_url": "https://mirror.ghproxy.com/https://github.com/gong1035426184/my-tingshu-plugin/releases/download/v1.0/18ts.jar",
-  "update_msg": "使用备用加速通道",
+  "download_url": "https://gong1035426184.github.io/my-tingshu-plugin/18ts.jar",
+  "update_msg": "使用 Pages 官方直链",
   "support_url": ""
 }
