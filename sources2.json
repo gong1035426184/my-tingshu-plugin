@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "entry_package": "sources_by_eprendre",
+  "name": "Eprendre 扩展源",
+  "download_url": "https://gong1035426184.github.io/my-tingshu-plugin/my_sound_01.jar",
+  "update_msg": "新增独立扩展源",
+  "support_url": ""
+}
